@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ถึงคนดีของเค้า...</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600&family=Kanit:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* --- CSS Styling --- */
+        :root {
+            --pastel-pink: #FFDDE2;
+            --cream: #FFF5E1;
+            --peach: #FFCBA4;
+            --dark-text: #5C4B51;
+            --primary-action: #FF8FAB;
+            --primary-action-hover: #FF6F91;
+            --timeline-line: #fec5d6;
+        }
+
+        body {
+            font-family: 'Mali', 'Kanit', sans-serif;
+            background-color: var(--cream);
+            color: var(--dark-text);
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        section {
+            padding: 60px 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1, h2, h3 {
+             font-family: 'Kanit', sans-serif;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: var(--primary-action);
+            margin-bottom: 40px;
+        }
+        
+        /* --- Hero Section --- */
+        #hero {
+            background-color: var(--pastel-pink);
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #hero h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        #hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+        }
+
+        #hero img {
+            margin-top: 20px;
+            max-width: 150px;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* --- Reasons Section --- */
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background-color: white;
+            padding: 40px 25px;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            width: 200px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        /* --- ⭐ Timeline Section (New) ⭐ --- */
+        #timeline {
+            background-color: white;
+        }
+
+        .timeline-container {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* The vertical line */
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 5px;
+            background-color: var(--timeline-line);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2.5px;
+            border-radius: 5px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        /* Item on the right */
+        .timeline-item.right {
+            left: 50%;
+        }
+
+        /* The icon on the timeline */
+        .timeline-icon {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            right: -25px;
+            top: 30px;
+            background-color: white;
+            border: 4px solid var(--timeline-line);
+            border-radius: 50%;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+        }
+
+        .timeline-item.right .timeline-icon {
+            left: -25px;
+        }
+
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            position: relative;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+        .timeline-content h3 {
+             margin-top: 0;
+             color: var(--primary-action);
+        }
+        .timeline-content img {
+            max-width: 100px;
+            margin-top: 15px;
+            border-radius: 10px;
+        }
+        
+        /* The arrow pointing to the timeline */
+        .timeline-item .timeline-content::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 40px;
+            width: 0;
+            z-index: 1;
+            border: medium solid white;
+            right: -10px;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #f9f9f9;
+        }
+
+        .timeline-item.right .timeline-content::before {
+            left: -10px;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #f9f9f9 transparent transparent;
+        }
+
+
+        /* --- Memory Gallery Section --- */
+        #gallery {
+            background-color: var(--pastel-pink);
+        }
+        
+        .slider-container {
+            max-width: 700px;
+            margin: 30px auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .slide img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .slide-caption {
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            padding: 10px;
+            font-size: 1rem;
+            font-style: italic;
+        }
+        
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            font-size: 2rem;
+            padding: 5px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        #prev-btn { left: 15px; }
+        #next-btn { right: 15px; }
+
+        /* --- Call to Action Section --- */
+        #cta p {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .button-container {
+            margin-top: 20px;
+            position: relative;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #yes-btn {
+            background-color: var(--primary-action);
+            color: white;
+            transform-origin: center;
+        }
+        #yes-btn:hover {
+            background-color: var(--primary-action-hover);
+            transform: scale(1.1);
+        }
+
+        #no-btn {
+            background-color: #E0E0E0;
+            color: var(--dark-text);
+        }
+        
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            /* Timeline responsive */
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-item.right {
+                left: 0%;
+            }
+            .timeline-icon {
+                left: 6px;
+            }
+            .timeline-item.right .timeline-icon {
+                left: 6px;
+            }
+            .timeline-item .timeline-content::before,
+            .timeline-item.right .timeline-content::before {
+                left: -10px;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent #f9f9f9 transparent transparent;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 2rem; }
+            .card { width: 80%; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section id="hero">
+            <h1>เค้าอาจจะไม่รู้ว่าทำอะไรผิดไป แต่เค้าไม่อยากให้เราต้องโกรธกันเลยนะ</h1>
+            <p>"อยากให้เรากลับมาคุยกันดี ๆ"            </p>
+            <img src="LINE_ALBUM_moji ouann_250724_2.jpg" alt="Cute Apology Image">
+        </section>
+
+        <section id="reasons">
+            <h2>ถึงจะงอนกัน แต่เค้าก็ยังรักเธอเหมือนเดิมนะ เพราะว่า...</h2>
+            <div class="cards-container">
+                <div class="card">รอยยิ้มของเธอ</div>
+                <div class="card">ความใจดีของเธอ</div>
+                <div class="card">เวลาที่เราอยู่ด้วยกัน</div>
+                <div class="card">ทุกๆ อย่างที่เป็นเธอ</div>
+            </div>
+        </section>
+
+        <section id="timeline">
+            <h2>เส้นทางความทรงจำของเรา</h2>
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="timeline-icon">❤️</div>
+                    <div class="timeline-content">
+                        <h3>วันที่เราพบกันครั้งแรก</h3>
+                        <p>จำได้ไหมวันที่... [เล่าเรื่องราวความทรงจำแรกพบสั้นๆ] วันนั้นทำให้ฉันรู้ว่าโลกของฉันกำลังจะเปลี่ยนไป</p>
+                        <img src="aa1.jpg" alt="รูปภาพวันแรกพบ"style="width: 100%; max-width: 400px;">
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-icon">🌟</div>
+                    <div class="timeline-content">
+                        <h3>เดทแรกของเรา</h3>
+                        <p>ที่ [สะพานเขียว] เป็นวันที่โมชอบที่สุดเลยเพราะโมได้ตัดสินใจชื้อดอกไม้ให้ผู้หญิงที่โมรู้สึกอยากจะให้ที่สุดคนหนึ่งรู้สึกอยากจะให้จากใจจริงๆ ตั้งแต่เกิดมาคนที่อยากจะให้จากใจจริงก็คือแม่แล้วก็ไม่มีแล้ว กลับบ้านมาก็อวดแม่ว่าสาวให้ดอกไม้มาเหมือนกัน >< </p> 
+                        <img src="ก.jpg" alt="รูปเดทแรก"style="width: 100%; max-width: 400px;">
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon">😊</div>
+                    <div class="timeline-content">
+                        <h3>เดทแรกของเรา</h3>
+                        <p>อันนี้เป็นรูปที่เราไปเที่ยวกันตั้งแต่ตอนเจอกันครั้งแรกเลยคือหอศิลป์จริงๆมันมีรูปอื่นมากกว่านี้แต่เค้ารู้สึกพอเลื่อนมาเจอมันก็รู้สึกชอบสุดๆแค่คิดก็ยังจำอารมณ์ตอนนั้นที่ถ่ายได้เลยมันรู้สึกดีมากๆตั้งแต่ตอนไปเที่ยวแล้วก็ตอนกลับ เพราะนั้นคือเดทแรกจริงๆจังๆในชีวิตของโมเลยที่รู้สึกดี </p>
+                        <img src="++++++++++++++++++++.jpg" alt="รูปคู่ล่าสุด"style="width: 100%; max-width: 400px;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="gallery">
+            <h2>ความทรงจำดีๆ ของเรา 📸</h2>
+            <div class="slider-container">
+                <div class="slider">
+                    <div class="slide">
+                        <img src="000000000.jpg" alt="Memory 1">
+                        <p class="slide-caption">ไม่รู้ว่าเรียนว่าวัน DeepTalk Day ได้มั้ย แต่รู้ว่าเป็นวันที่ดีสำหรับโมมากๆแล้วก็เจ็บนิ้วเท้าสำหรับโมเหมือนกันแต่ชอบมากๆที่ได้เดินคุยกับเธอไปเรื่อยๆแบบนั้น ไว้มีโอกาสไปหาที่ที่บรรยากาศดีๆแบบนั้นอีกนะคั้บ</p>
+                    </div>
+                    <div class="slide">
+                        <img src="aaaaaaaaaasssssss.jpg" alt="Memory 2style= "width: 100">
+                        <p class="slide-caption">วันนี้หลังจากโมได้ไปเที่ยวหอศิลป์กับเธอเสร็จหลังจากนั้นโมก็รู้สึกชอบเธอขึ้นมาเรื่อยๆ ตั้งแต่กลับมาบ้านก็รู้สึกว่าดรีมน่ารักมากๆ ฟิน</p>
+                    </div>
+                    <div class="slide">
+                        <img src="LINE_ALBUM_moji ouann_250724_4.jpg" alt="Memory 3">
+                        <p class="slide-caption">ดรีมถ่ายให้เราเอง >_< </p>
+                    </div>
+                </div>
+                <button id="prev-btn" class="slider-btn">❮</button>
+                <button id="next-btn" class="slider-btn">❯</button>
+            </div>
+        </section>
+
+        <section id="cta">
+            <p>หายงอนเค้าได้มั้ย?</p>
+            <div class="button-container">
+                <button id="yes-btn" class="btn">หายงอนกะดะะะ~ </button>
+                <button id="no-btn" class="btn">ยังไม่หายเว้ยยย</button>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+    // --- JavaScript Functionality ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Fade-in Animation on Scroll
+        const sections = document.querySelectorAll('section');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        sections.forEach(section => { observer.observe(section); });
+
+        // Image Slider Logic
+        const slider = document.querySelector('.slider');
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        let currentIndex = 0;
+        function updateSliderPosition() {
+            slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateSliderPosition();
+        });
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateSliderPosition();
+        });
+
+        // Button Logic
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        let yesBtnScale = 1;
+        function moveNoButton() {
+            const container = document.querySelector('.button-container');
+            const containerRect = container.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            noBtn.style.position = 'absolute';
+            const newTop = Math.random() * (containerRect.height - btnRect.height);
+            const newLeft = Math.random() * (containerRect.width - btnRect.width);
+            noBtn.style.top = `${newTop}px`;
+            noBtn.style.left = `${newLeft}px`;
+            yesBtnScale += 0.2;
+            yesBtn.style.transform = `scale(${yesBtnScale})`;
+        }
+        noBtn.addEventListener('mouseover', moveNoButton);
+        noBtn.addEventListener('click', moveNoButton);
+        
+        yesBtn.addEventListener('click', () => {
+            confetti({
+                particleCount: 150,
+                spread: 90,
+                origin: { y: 0.6 }
+            });
+            setTimeout(() => {
+                 alert('เย้! รักที่สุดเลยนะคนดีของเค้า! ');
+            }, 300);
+        });
+    });
+    </script>
+</body>
+</html>
